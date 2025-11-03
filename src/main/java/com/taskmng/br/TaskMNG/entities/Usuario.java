@@ -1,5 +1,6 @@
 package com.taskmng.br.TaskMNG.entities;
 
+import com.taskmng.br.TaskMNG.enums.Perfil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -40,9 +41,9 @@ public class Usuario {
     @NotNull
     private Integer ativo;
 
-    @ManyToOne() //lembrar de colocar dps
-    @JoinColumn(name = "fk_tipo_perfil", nullable = false)
-    private Perfil idPerfilUsuario;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_perfil", nullable = false)
+    private Perfil tipoPerfil;
 
     // criar os getters e setters para puxar o perfil do usuario.
     //
