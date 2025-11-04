@@ -21,6 +21,8 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     public Usuario cadastrarUsuario(Usuario novoUsuario, Perfil perfilCriador) {
 
         if(perfilCriador != Perfil.ADMINISTRADOR && perfilCriador != Perfil.TECHLEAD){
@@ -114,5 +116,19 @@ public class UsuarioService {
 
         usuario.setAtivo(0);
         usuarioRepository.save(usuario);
+    }
+
+    public boolean autenticar(String email, String senhaInformada){
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "usuário não encontrado"));
+
+        boolean senhaCorreta = passwordEncoder.matches(senhaInformada, usuario.getSenha());
+
+        if(!senhaCorreta){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "senha incorreta.");
+        }
+        return true;
     }
 }
