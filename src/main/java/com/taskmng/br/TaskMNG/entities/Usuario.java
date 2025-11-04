@@ -9,6 +9,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ *
+ * @author : Murillo Monteiro Aragão
+ *
+ */
+
 @Entity
 @Table(name = "Usuario")
 @NoArgsConstructor
@@ -26,7 +32,6 @@ public class Usuario {
     @NotBlank
     private String nome;
 
-    @NotBlank
     @NotNull
     private Integer idade;
 
@@ -35,7 +40,6 @@ public class Usuario {
     private String email;
 
     @NotNull
-    //passar o hash de senha aqui dps
     private String senha;
 
     @NotNull
@@ -45,6 +49,4 @@ public class Usuario {
     @Column(name = "tipo_perfil", nullable = false)
     private Perfil tipoPerfil;
 
-    // criar os getters e setters para puxar o perfil do usuario.
-    //
 }
