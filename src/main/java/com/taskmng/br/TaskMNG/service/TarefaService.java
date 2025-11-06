@@ -101,6 +101,22 @@ public class TarefaService {
         return tarefaRepository.save(tarefa);
     }
 
+    public void deletarTarefa(Long id, Usuario usuarioExclusao) {
+        if (usuarioExclusao == null)
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "usuário não autenticado.");
+
+        if (usuarioExclusao.getTipoPerfil() != Perfil.TECHLEAD)
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "apenas TECHLEAD pode excluir tarefas.");
+
+        Tarefa tarefa = tarefaRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "tarefa não encontrada."));
+
+        if (tarefa.getAtivo() == 0)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "tarefa já está inativa.");
+
+        tarefa.setAtivo(0);
+        tarefaRepository.save(tarefa);
+    }
 
 
 }
