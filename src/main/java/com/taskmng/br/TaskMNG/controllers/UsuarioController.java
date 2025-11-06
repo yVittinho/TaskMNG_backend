@@ -1,6 +1,7 @@
 package com.taskmng.br.TaskMNG.controllers;
 
 
+import com.taskmng.br.TaskMNG.dto.UsuarioDTO;
 import com.taskmng.br.TaskMNG.entities.Usuario;
 import com.taskmng.br.TaskMNG.enums.Perfil;
 import com.taskmng.br.TaskMNG.service.UsuarioService;
@@ -27,7 +28,7 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> listarUsuarios (){
+    public ResponseEntity<List<UsuarioDTO>> listarUsuarios (){
         return ResponseEntity.ok(usuarioService.exibirUsuarios());
     }
 

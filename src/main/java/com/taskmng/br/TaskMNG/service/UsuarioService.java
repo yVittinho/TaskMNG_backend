@@ -1,5 +1,6 @@
 package com.taskmng.br.TaskMNG.service;
 
+import com.taskmng.br.TaskMNG.dto.UsuarioDTO;
 import com.taskmng.br.TaskMNG.entities.Usuario;
 import com.taskmng.br.TaskMNG.enums.Perfil;
 import com.taskmng.br.TaskMNG.repository.UsuarioRepository;
@@ -56,10 +57,15 @@ public class UsuarioService {
     }
 
     // trazendo todos os usuarios(ativos)
-    public List<Usuario> exibirUsuarios(){
+    public List<UsuarioDTO> exibirUsuarios() {
         return usuarioRepository.findAll()
                 .stream()
                 .filter(u -> u.getAtivo() == 1)
+                .map(u -> new UsuarioDTO(
+                        u.getNome(),
+                        u.getIdade(),
+                        u.getTipoPerfil()
+                ))
                 .toList();
     }
 
