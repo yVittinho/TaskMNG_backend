@@ -55,6 +55,32 @@ public class TarefaController {
         return ResponseEntity.ok(tarefa);
     }
 
+    @PatchMapping("/entregar/{id}")
+    public ResponseEntity<TarefaDTO> entregarTarefa(@PathVariable Long id, HttpServletRequest request) {
+        Usuario colaborador = (Usuario) request.getSession().getAttribute("usuarioLogado");
+        if(colaborador == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
+        Tarefa tarefaEntregue = tarefaService.entregarTarefa(id, colaborador);
 
+        TarefaDTO dto = new TarefaDTO(
+                tarefaEntregue.getNomeTarefa(),
+                tarefaEntregue.getDescricao(),
+                tarefaEntregue.getDataCriacao(),
+                tarefaEntregue.getDataEntrega(),
+                tarefaEntregue.getPrioridade(),
+                tarefaEntregue.getStatus()
+        );
+
+        return ResponseEntity.ok(dto);
+    }
+
+    @DeleteMapping("/excluir/{id}")
+    public ResponseEntity<Void> deletarTarefa(@PathVariable Long id, HttpServletRequest request) {
+        Usuario usuarioLogado = (Usuario) request.getSession().getAttribute("usuarioLogado");
+        if(usuarioLogado == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        tarefaService.deletarTarefa(id, usuarioLogado);
+        return ResponseEntity.noContent().build();
+    }
 }
