@@ -2,10 +2,12 @@ package com.taskmng.br.TaskMNG.service;
 
 import com.taskmng.br.TaskMNG.dto.TarefaDTO;
 import com.taskmng.br.TaskMNG.dto.TarefaUpdateDTO;
+import com.taskmng.br.TaskMNG.entities.Projeto;
 import com.taskmng.br.TaskMNG.entities.Tarefa;
 import com.taskmng.br.TaskMNG.entities.Usuario;
 import com.taskmng.br.TaskMNG.enums.Perfil;
 import com.taskmng.br.TaskMNG.enums.Status;
+import com.taskmng.br.TaskMNG.repository.ProjetoRepository;
 import com.taskmng.br.TaskMNG.repository.TarefaRepository;
 import com.taskmng.br.TaskMNG.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import java.util.List;
 public class TarefaService {
     private final TarefaRepository tarefaRepository;
     private final UsuarioRepository usuarioRepository;
+    private final ProjetoRepository projetoRepository;
 
     @Transactional
     public TarefaDTO criarTarefa(Tarefa novaTarefa, Usuario techLead) {
@@ -38,11 +41,15 @@ public class TarefaService {
         Usuario colaborador = usuarioRepository.findById(novaTarefa.getColaborador().getIdUsuario())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "colaborador não encontrado."));
 
+        Projeto projeto = projetoRepository.findById(novaTarefa.getProjeto().getIdProjeto())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "projeto não encontrado."));
+
         novaTarefa.setAtivo(1);
         novaTarefa.setDataCriacao(new Date());
         novaTarefa.setStatus(Status.PENDENTE);
         novaTarefa.setTechLead(techLead);
         novaTarefa.setColaborador(colaborador);
+        novaTarefa.setProjeto(projeto);
 
         Tarefa tarefaSalva = tarefaRepository.save(novaTarefa);
         return new TarefaDTO(tarefaSalva);

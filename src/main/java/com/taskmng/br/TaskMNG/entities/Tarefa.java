@@ -61,4 +61,8 @@ public class Tarefa {
     @ManyToOne
     @JoinColumn(name = "colaborador_id", nullable = false)
     private Usuario colaborador;
+
+    @ManyToOne
+    @JoinColumn(name = "projeto_id", nullable = false)
+    private Projeto projeto;
 }

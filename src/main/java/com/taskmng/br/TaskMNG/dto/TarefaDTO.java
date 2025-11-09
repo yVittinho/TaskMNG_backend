@@ -16,7 +16,8 @@ public record TarefaDTO(
         String prioridade,
         String status,
         String colaboradorDesignado,
-        String techLeadResponsavel
+        String techLeadResponsavel,
+        String descricaoProjeto
 ) {
     public TarefaDTO(Tarefa tarefa) {
         this(
@@ -27,6 +28,8 @@ public record TarefaDTO(
                 tarefa.getPrioridade() != null ? tarefa.getPrioridade().name() : null,
                 tarefa.getStatus() != null ? tarefa.getStatus().name() : null,
                 tarefa.getColaborador() != null ? tarefa.getColaborador().getNome() : null,
-                tarefa.getTechLead() != null ? tarefa.getTechLead().getNome() : null);
+                tarefa.getTechLead() != null ? tarefa.getTechLead().getNome() : null,
+                tarefa.getProjeto() != null ? tarefa.getProjeto().getDescricaoProjeto() : null
+        );
     }
 }

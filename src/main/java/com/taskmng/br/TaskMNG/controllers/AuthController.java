@@ -2,6 +2,7 @@ package com.taskmng.br.TaskMNG.controllers;
 
 
 import com.taskmng.br.TaskMNG.dto.LoginDTO;
+import com.taskmng.br.TaskMNG.dto.UsuarioDTO;
 import com.taskmng.br.TaskMNG.entities.Usuario;
 import com.taskmng.br.TaskMNG.service.UsuarioService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/taskmng/auth")
@@ -42,6 +40,17 @@ public class AuthController {
     public ResponseEntity<Void> logout(HttpSession session) {
         session.invalidate();
         return ResponseEntity.noContent().build();
+    }
+
+    //verificando o usuario logado no front
+    @GetMapping("/verify")
+    public ResponseEntity<UsuarioDTO> getUsuarioLogado(HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuario == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        UsuarioDTO dto = new UsuarioDTO(usuario.getNome(), usuario.getIdade(), usuario.getTipoPerfil());
+        return ResponseEntity.ok(dto);
     }
 }
 

@@ -19,7 +19,7 @@ public class Projeto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_projeto")
-    private Long idPojeto;
+    private Long idProjeto;
 
     @NotBlank
     @Column(name = "descricao_projeto")
