@@ -2,6 +2,7 @@ package com.taskmng.br.TaskMNG.controllers;
 
 
 import com.taskmng.br.TaskMNG.dto.UsuarioDTO;
+import com.taskmng.br.TaskMNG.dto.UsuarioUpdateDTO;
 import com.taskmng.br.TaskMNG.entities.Usuario;
 import com.taskmng.br.TaskMNG.enums.Perfil;
 import com.taskmng.br.TaskMNG.service.UsuarioService;
@@ -38,12 +39,14 @@ public class UsuarioController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioAtualizado, HttpServletRequest request) {
+    public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody UsuarioUpdateDTO dto, HttpServletRequest request) {
         Usuario usuarioLogado = (Usuario) request.getSession().getAttribute("usuarioLogado");
         if (usuarioLogado == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(usuarioService.atualizarUsuario(id, usuarioAtualizado));
+
+        Usuario atualizado = usuarioService.atualizarUsuario(id, dto);
+        return ResponseEntity.ok(atualizado);
     }
 
     @DeleteMapping("/excluir/{id}")

@@ -1,5 +1,6 @@
 package com.taskmng.br.TaskMNG.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.taskmng.br.TaskMNG.enums.Perfil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -39,6 +40,7 @@ public class Usuario {
     private String email;
 
     @NotBlank
+    @JsonIgnore
     private String senha;
 
     @NotNull

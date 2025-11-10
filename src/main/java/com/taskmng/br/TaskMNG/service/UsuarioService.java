@@ -1,6 +1,7 @@
 package com.taskmng.br.TaskMNG.service;
 
 import com.taskmng.br.TaskMNG.dto.UsuarioDTO;
+import com.taskmng.br.TaskMNG.dto.UsuarioUpdateDTO;
 import com.taskmng.br.TaskMNG.entities.Usuario;
 import com.taskmng.br.TaskMNG.enums.Perfil;
 import com.taskmng.br.TaskMNG.repository.UsuarioRepository;
@@ -77,23 +78,21 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario atualizarUsuario(Long id, Usuario usuarioAtualizado){
-        //usando optional para verificar se o usuario existe
+    public Usuario atualizarUsuario(Long id, UsuarioUpdateDTO dto) {
         Usuario usuarioExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "usuário não encontrado para atualização"));
+                        "usuário não encontrado"));
 
-        usuarioExistente.setNome(usuarioAtualizado.getNome());
-        usuarioExistente.setIdade(usuarioAtualizado.getIdade());
-        usuarioExistente.setEmail(usuarioAtualizado.getEmail());
+        if (dto.nome() != null && !dto.nome().isBlank()) {
+            usuarioExistente.setNome(dto.nome());
+        }
 
-        if (usuarioAtualizado.getSenha() != null && !usuarioAtualizado.getSenha().isBlank()) {
-            if (!senhaValida(usuarioAtualizado.getSenha())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "senha inválida.");
-            }
-            String senhaHash = passwordEncoder.encode(usuarioAtualizado.getSenha());
-            usuarioExistente.setSenha(senhaHash);
+        if (dto.idade() != null) {
+            usuarioExistente.setIdade(dto.idade());
+        }
+
+        if (dto.email() != null && !dto.email().isBlank()) {
+            usuarioExistente.setEmail(dto.email());
         }
         return usuarioRepository.save(usuarioExistente);
     }
