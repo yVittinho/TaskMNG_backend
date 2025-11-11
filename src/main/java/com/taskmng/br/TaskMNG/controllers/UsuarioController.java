@@ -1,6 +1,7 @@
 package com.taskmng.br.TaskMNG.controllers;
 
 
+import com.taskmng.br.TaskMNG.dto.RecuperarSenhaDTO;
 import com.taskmng.br.TaskMNG.dto.UsuarioDTO;
 import com.taskmng.br.TaskMNG.dto.UsuarioUpdateDTO;
 import com.taskmng.br.TaskMNG.entities.Usuario;
@@ -47,6 +48,12 @@ public class UsuarioController {
 
         Usuario atualizado = usuarioService.atualizarUsuario(id, dto);
         return ResponseEntity.ok(atualizado);
+    }
+
+    @PatchMapping("/alterar-senha")
+    public ResponseEntity<String> alterarSenha(@RequestBody @Valid RecuperarSenhaDTO dto) {
+        usuarioService.recuperarSenha(dto);
+        return ResponseEntity.ok("senha alterada com sucesso.");
     }
 
     @DeleteMapping("/excluir/{id}")

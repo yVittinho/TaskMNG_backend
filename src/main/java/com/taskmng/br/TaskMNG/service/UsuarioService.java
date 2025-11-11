@@ -1,5 +1,6 @@
 package com.taskmng.br.TaskMNG.service;
 
+import com.taskmng.br.TaskMNG.dto.RecuperarSenhaDTO;
 import com.taskmng.br.TaskMNG.dto.UsuarioDTO;
 import com.taskmng.br.TaskMNG.dto.UsuarioUpdateDTO;
 import com.taskmng.br.TaskMNG.entities.Usuario;
@@ -95,6 +96,24 @@ public class UsuarioService {
             usuarioExistente.setEmail(dto.email());
         }
         return usuarioRepository.save(usuarioExistente);
+    }
+
+    @Transactional
+    public void recuperarSenha(RecuperarSenhaDTO dto) {
+        Usuario usuario = usuarioRepository.findByEmail(dto.email())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "usuário não encontrado."));
+
+        if (!dto.novaSenha().equals(dto.confirmarSenha())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "as senhas não são iguais.");
+        }
+
+        if (!senhaValida(dto.novaSenha())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "senha inválida. A senha deve conter entre 8 e 14 caracteres, incluindo maiúscula, minúscula, número e caractere especial.");
+        }
+
+        usuario.setSenha(passwordEncoder.encode(dto.novaSenha()));
+        usuarioRepository.save(usuario);
     }
 
     private boolean senhaValida(String senha) {
