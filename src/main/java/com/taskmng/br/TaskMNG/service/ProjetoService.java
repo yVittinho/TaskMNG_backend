@@ -20,17 +20,8 @@ public class ProjetoService {
     private final ProjetoRepository projetoRepository;
 
     @Transactional
-    public ProjetoDTO criarProjeto(Projeto novoProjeto, Usuario usuarioLogado) {
-        if (usuarioLogado == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "usuário não autenticado.");
-        }
-
-        if (usuarioLogado.getTipoPerfil() != Perfil.ADMINISTRADOR &&
-                usuarioLogado.getTipoPerfil() != Perfil.TECHLEAD) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "apenas administradores ou techleads podem criar projetos.");
-        }
-
+    public ProjetoDTO criarProjeto(Projeto novoProjeto) {
+        novoProjeto.setStatusProjeto(novoProjeto.getStatusProjeto());
         novoProjeto.setAtivo(1);
         Projeto salvo = projetoRepository.save(novoProjeto);
         return new ProjetoDTO(salvo);
@@ -44,11 +35,7 @@ public class ProjetoService {
                 .toList();
     }
 
-    public ProjetoDTO buscarPorId(Long id, Usuario usuarioLogado) {
-        if (usuarioLogado == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "usuário não autenticado.");
-        }
-
+    public ProjetoDTO buscarPorId(Long id) {
         Projeto projeto = projetoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "projeto não encontrado."));
 

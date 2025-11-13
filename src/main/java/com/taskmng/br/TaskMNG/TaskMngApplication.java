@@ -16,5 +16,4 @@ public class TaskMngApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TaskMngApplication.class, args);
 	}
-
 }

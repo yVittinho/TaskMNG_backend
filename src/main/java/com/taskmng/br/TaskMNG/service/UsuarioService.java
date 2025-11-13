@@ -26,46 +26,37 @@ public class UsuarioService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
-    public Usuario cadastrarUsuario(Usuario novoUsuario, Perfil perfilCriador) {
-        if(perfilCriador != Perfil.ADMINISTRADOR && perfilCriador != Perfil.TECHLEAD){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "apenas administradores ou techleads podem cadastrar usuários");
-
-       }
-
+    public Usuario cadastrarUsuario(Usuario novoUsuario) {
         if (usuarioRepository.existsByEmail(novoUsuario.getEmail())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "email já cadastrado.");
-
         }
 
-        if(novoUsuario.getTipoPerfil() == null){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "perfil do usuário é obrigatório");
+        if (novoUsuario.getTipoPerfil() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "perfil do usuário é obrigatório");
         }
 
-        //lembrar de validar a senha com regex
         if (!senhaValida(novoUsuario.getSenha())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "senha inválida. A senha deve conter entre 8 e 14 caracteres, incluindo maiúscula, minúscula, número e caractere especial.");
         }
 
-        //passando criptografia na senha para armazenar no banco
         String senhaHash = passwordEncoder.encode(novoUsuario.getSenha());
+        novoUsuario.setTipoPerfil(novoUsuario.getTipoPerfil());
         novoUsuario.setSenha(senhaHash);
-
         novoUsuario.setAtivo(1);
 
         return usuarioRepository.save(novoUsuario);
     }
 
+
     // trazendo todos os usuarios(ativos)
     public List<UsuarioDTO> exibirUsuarios() {
         return usuarioRepository.findAll()
                 .stream()
-                .filter(u -> u.getAtivo() == 1)
                 .map(u -> new UsuarioDTO(
                         u.getNome(),
                         u.getIdade(),
+                        u.getEmail(),
                         u.getTipoPerfil()
                 ))
                 .toList();
@@ -124,12 +115,7 @@ public class UsuarioService {
 
     //exclusao lógica do usuário
     @Transactional
-    public void deletarUsuario(Long id, Usuario usuarioLogado) {
-        if (usuarioLogado.getTipoPerfil() != Perfil.ADMINISTRADOR) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "apenas administradores podem excluir usuários.");
-        }
-
+    public void deletarUsuario(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "usuário não encontrado para exclusão"));

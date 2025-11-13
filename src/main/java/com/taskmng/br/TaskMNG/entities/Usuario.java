@@ -40,7 +40,6 @@ public class Usuario {
     private String email;
 
     @NotBlank
-    @JsonIgnore
     private String senha;
 
     @NotNull

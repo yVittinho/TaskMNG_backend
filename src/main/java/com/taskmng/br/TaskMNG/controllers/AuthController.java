@@ -22,7 +22,7 @@ public class AuthController {
     private UsuarioService usuarioService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request) {
+    public ResponseEntity<UsuarioDTO> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request) {
         boolean autenticado = usuarioService.autenticar(loginDTO.email(), loginDTO.senha());
 
         if (autenticado) {
@@ -30,9 +30,11 @@ public class AuthController {
             HttpSession session = request.getSession(true);
             session.setAttribute("usuarioLogado", usuario);
 
-            return ResponseEntity.ok("login realizado com sucesso.");
+            // Altera para retornar o DTO
+            UsuarioDTO dto = new UsuarioDTO(usuario.getNome(), usuario.getIdade(), usuario.getEmail(), usuario.getTipoPerfil());
+            return ResponseEntity.ok(dto);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("credenciais inválidas.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null); // Retorna null no body se falhar
         }
     }
 
@@ -49,7 +51,13 @@ public class AuthController {
         if (usuario == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        UsuarioDTO dto = new UsuarioDTO(usuario.getNome(), usuario.getIdade(), usuario.getTipoPerfil());
+
+        UsuarioDTO dto = new UsuarioDTO(
+                usuario.getNome(),
+                usuario.getIdade(),
+                usuario.getEmail(),
+                usuario.getTipoPerfil()
+        );
         return ResponseEntity.ok(dto);
     }
 }

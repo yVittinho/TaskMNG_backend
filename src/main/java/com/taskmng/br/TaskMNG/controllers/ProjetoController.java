@@ -21,9 +21,8 @@ public class ProjetoController {
     private ProjetoService projetoService;
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<ProjetoDTO> cadastrarProjeto(@RequestBody @Valid Projeto novoProjeto, HttpServletRequest request) {
-        Usuario usuarioLogado = (Usuario) request.getSession().getAttribute("usuarioLogado");
-        ProjetoDTO projetoCriado = projetoService.criarProjeto(novoProjeto, usuarioLogado);
+    public ResponseEntity<ProjetoDTO> cadastrarProjeto(@RequestBody @Valid Projeto novoProjeto) {
+        ProjetoDTO projetoCriado = projetoService.criarProjeto(novoProjeto);
         return ResponseEntity.status(HttpStatus.CREATED).body(projetoCriado);
     }
 
@@ -34,8 +33,7 @@ public class ProjetoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProjetoDTO> buscarProjetoPorId(@PathVariable Long id, HttpServletRequest request) {
-        Usuario usuarioLogado = (Usuario) request.getSession().getAttribute("usuarioLogado");
-        ProjetoDTO projeto = projetoService.buscarPorId(id, usuarioLogado);
+        ProjetoDTO projeto = projetoService.buscarPorId(id);
         return ResponseEntity.ok(projeto);
     }
 

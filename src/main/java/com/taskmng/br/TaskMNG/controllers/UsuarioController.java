@@ -24,8 +24,8 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody @Valid Usuario novoUsuario, @RequestParam Perfil perfilCriador) {
-        Usuario usuarioCriado = usuarioService.cadastrarUsuario(novoUsuario, perfilCriador);
+    public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody @Valid Usuario novoUsuario, HttpServletRequest request) {
+        Usuario usuarioCriado = usuarioService.cadastrarUsuario(novoUsuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioCriado);
     }
 
@@ -40,12 +40,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody UsuarioUpdateDTO dto, HttpServletRequest request) {
-        Usuario usuarioLogado = (Usuario) request.getSession().getAttribute("usuarioLogado");
-        if (usuarioLogado == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
+    public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody UsuarioUpdateDTO dto) {
         Usuario atualizado = usuarioService.atualizarUsuario(id, dto);
         return ResponseEntity.ok(atualizado);
     }
@@ -57,12 +52,8 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<Void> deletarUsuario(@PathVariable Long id, HttpServletRequest request) {
-        Usuario usuarioLogado = (Usuario) request.getSession().getAttribute("usuarioLogado");
-        if (usuarioLogado == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        usuarioService.deletarUsuario(id, usuarioLogado);
+    public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
+        usuarioService.deletarUsuario(id);
         return ResponseEntity.noContent().build();
     }
 
